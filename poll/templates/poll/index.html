@@ -1,12 +1,24 @@
+{% load staticfiles %}
+<html>
+<head>
+    <title>SA2C HPC Clinic</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+</head>
+<div class="content container">
+<div class="page-header">
 <h1>HPC Clinic Topics</h1>
+</div>
 {% if topic_list %}
-  <table>
-  <thead>
+  <div class="table-responsive">
+  <table class="table table-bordered">
+  <thead class="thead-light">
     <tr>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Votes</th>
-      <th></th>
+      <th scope="col">Title</th>
+      <th scope="col">Description</th>
+      <th scope="col">Votes</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -25,7 +37,10 @@
     {% endfor %}
   </tbody>
   </table>
-  </ul>
+  </div>
 {% else %}
     <p>No topics are available.</p>
 {% endif %}
+</div>
+
+<//html>

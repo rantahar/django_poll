@@ -6,7 +6,7 @@ from poll.models import ClinicTopic
 
 
 def index(request):
-    topic_list = ClinicTopic.objects.order_by('votes')
+    topic_list = ClinicTopic.objects.order_by('-votes')
     context = {
         'topic_list': topic_list,
     }
