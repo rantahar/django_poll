@@ -28,15 +28,23 @@
       <td>{{ topic.description }}</td>
       <td>{{ topic.votes }}</td>
       <td>
+        {% if can_vote %}
         <form action="{% url 'poll:vote' topic.id %}" method="post">
       {% csrf_token %}
           <input type="submit" name="vote" id="vote {{topic.id}}" value="Vote" />
         </form>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
   </tbody>
   </table>
+  {% if not can_vote %}
+  <form action="{% url 'poll:undo_vote' %}" method="post">
+{% csrf_token %}
+    <input type="submit" name="undo" id="undo" value="Undo Vote" />
+  </form>
+  {% endif %}
   </div>
 {% else %}
     <p>No topics are available.</p>
