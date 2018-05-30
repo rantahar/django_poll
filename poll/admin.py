@@ -1,6 +1,6 @@
 from django.contrib import admin
 from poll.forms import TopicAdminForm
-from poll.models import Topic, Voter
+from poll.models import Topic
 
 
 # Register your models here.
@@ -8,8 +8,3 @@ from poll.models import Topic, Voter
 class TopicAdmin(admin.ModelAdmin):
     form = TopicAdminForm
     list_display = ('title', )
-
-
-@admin.register(Voter)
-class VoterAdmin(admin.ModelAdmin):
-    list_display = ('created_time', )

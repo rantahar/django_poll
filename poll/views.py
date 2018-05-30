@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 from poll.models import Topic
-from poll.models import Voter
 
 
 def index(request):
@@ -13,13 +12,14 @@ def index(request):
         and vote buttons. Uses templates/poll/index.html
     """
     topic_list = Topic.objects.order_by('-votes')
-    time_threshold = datetime.now() - timedelta(days=1)
-    voter = Voter.objects.filter(user_id=request.user.id, created_time__gt=time_threshold)
-    can_vote = not voter.exists()
+
+    can_vote = 'vote' not in request.COOKIES
     if not can_vote:
-        vote = voter.first().topic
+        vote = int(request.COOKIES.get('vote'))
     else:
         vote = -1
+
+    print('vote:'+str(vote))
     context = {
         'topic_list': topic_list,
         'can_vote': can_vote,
@@ -37,32 +37,30 @@ def vote(request, choice):
         The id of the choice to vote for
 
     """
-    time_threshold = datetime.now() - timedelta(days=1)
-    if not Voter.objects.filter(user_id=request.user.id, created_time__gt=time_threshold).exists():
+    response = HttpResponseRedirect(reverse('poll:index'))
+
+    if 'vote' not in request.COOKIES:
         topic = get_object_or_404(Topic, pk=choice)
         topic.votes += 1
         topic.save()
 
-        # Clean up all existing references to the user
-        Voter.objects.filter(user_id=request.user.id).all().delete()
+        print('vote:'+str(choice))
+        response.set_cookie('vote', choice, max_age=60*60*24)
 
-        # Remember this vote
-        Voter.objects.create(topic=choice, user_id=request.user.id)
-
-    return HttpResponseRedirect(reverse('poll:index'))
+    return response
 
 
 def undo_vote(request):
     """ Undo an existing vote and delete the voter reference
         to allow voting again
     """
-    voter = Voter.objects.filter(user_id=request.user.id)
-    if voter.exists():
-        print('here')
-        voter = voter.first()
-        topic = get_object_or_404(Topic, pk=voter.topic)
+    response = HttpResponseRedirect(reverse('poll:index'))
+
+    if 'vote' in request.COOKIES:
+        vote = request.COOKIES.get('vote')
+        topic = get_object_or_404(Topic, pk=vote)
         topic.votes -= 1
         topic.save()
-        voter.delete()
+        response.delete_cookie('vote')
 
-    return HttpResponseRedirect(reverse('poll:index'))
+    return response
