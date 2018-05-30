@@ -14,7 +14,7 @@ def index(request):
     """
     topic_list = Topic.objects.order_by('-votes')
     time_threshold = datetime.now() - timedelta(days=1)
-    voter = Voter.objects.filter(user_id=request.user.id,created_time__gt=time_threshold)
+    voter = Voter.objects.filter(user_id=request.user.id, created_time__gt=time_threshold)
     can_vote = not voter.exists()
     if not can_vote:
         vote = voter.first().topic
@@ -38,7 +38,7 @@ def vote(request, choice):
 
     """
     time_threshold = datetime.now() - timedelta(days=1)
-    if not Voter.objects.filter(user_id=request.user.id,created_time__gt=time_threshold).exists():
+    if not Voter.objects.filter(user_id=request.user.id, created_time__gt=time_threshold).exists():
         topic = get_object_or_404(Topic, pk=choice)
         topic.votes += 1
         topic.save()
