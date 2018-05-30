@@ -10,10 +10,16 @@ from poll.models import Voter
 def index(request):
     topic_list = ClinicTopic.objects.order_by('-votes')
     time_threshold = datetime.now() - timedelta(days=1)
-    can_vote = not Voter.objects.filter(user_id=request.user.id,created_time__gt=time_threshold).exists()
+    voter = Voter.objects.filter(user_id=request.user.id,created_time__gt=time_threshold)
+    can_vote = not voter.exists()
+    if not can_vote:
+        vote = voter.first().topic
+    else:
+        vote = -1
     context = {
         'topic_list': topic_list,
         'can_vote': can_vote,
+        'vote': vote
     }
     return render(request, 'poll/index.html', context)
 

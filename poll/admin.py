@@ -1,11 +1,12 @@
 from django.contrib import admin
-from poll.models import ClinicTopic
-from poll.models import Voter
+from poll.forms import TopicAdminForm
+from poll.models import ClinicTopic, Voter
 
 
 # Register your models here.
 @admin.register(ClinicTopic)
 class ClinicTopicAdmin(admin.ModelAdmin):
+    form = TopicAdminForm
     list_display = ('title', )
 
 
