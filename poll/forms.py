@@ -5,7 +5,7 @@ from poll.models import Topic
 class TopicAdminForm(ModelForm):
     class Meta:
         model = Topic
-        fields = ('title','description')
+        fields = ('title', 'description')
         widgets = {
             'description': Textarea(attrs={'cols': 60, 'rows': 10}),
         }

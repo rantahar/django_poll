@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -44,8 +44,9 @@ def vote(request, choice):
         topic.votes += 1
         topic.save()
 
-        print('vote:'+str(choice))
-        response.set_cookie('vote', choice, max_age=60*60*24)
+        midnight = datetime.replace(datetime.now(), hour=23, minute=59, second=59)
+        expires = datetime.strftime(midnight, "%a, %d-%b-%Y %H:%M:%S GMT")
+        response.set_cookie('vote', choice, expires=expires)
 
     return response
 

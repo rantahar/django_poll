@@ -2,6 +2,9 @@ from django.db import models
 
 
 class Topic(models.Model):
+    """ Defines the topics to vote that can be voted for. Each has a
+        title, description and of course a vote count.
+    """
     title = models.CharField(
         max_length=128,
         unique=True,
